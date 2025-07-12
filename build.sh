@@ -39,6 +39,7 @@ PLAT="cuda"    # 平台選項：cuda 或 cpu，預設 cuda
 REPORT_BASE="$PROJECT_ROOT/report1"
 REPORT_REP="$REPORT_BASE.nsys-rep"
 SQLITE_REP="$REPORT_BASE.sqlite"
+QDSTRM_REP="$REPORT_BASE.qdstrm"
 
 ###############################################################################
 # 使用說明
@@ -435,6 +436,12 @@ for BUILD_DIR_NAME in "${BUILD_DIR_NAMES[@]}"; do
         if [[ -f "$SQLITE_REP" ]]; then
           echo "[$BUILD_DIR_NAME] Deleting generated report: $SQLITE_REP"
           rm -f "$SQLITE_REP"
+        else
+          echo "[$BUILD_DIR_NAME] No report found to delete at: $SQLITE_REP"
+        fi
+        if [[ -f "$QDSTRM_REP" ]]; then
+          echo "[$BUILD_DIR_NAME] Deleting generated report: $QDSTRM_REP"
+          rm -f "$QDSTRM_REP"
         else
           echo "[$BUILD_DIR_NAME] No report found to delete at: $SQLITE_REP"
         fi
