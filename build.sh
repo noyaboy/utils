@@ -443,7 +443,7 @@ for BUILD_DIR_NAME in "${BUILD_DIR_NAMES[@]}"; do
           echo "[$BUILD_DIR_NAME] Deleting generated report: $QDSTRM_REP"
           rm -f "$QDSTRM_REP"
         else
-          echo "[$BUILD_DIR_NAME] No report found to delete at: $SQLITE_REP"
+          echo "[$BUILD_DIR_NAME] No report found to delete at: $QDSTRM_REP"
         fi
 
         echo "[$BUILD_DIR_NAME] nsys mode complete (report deleted)."
