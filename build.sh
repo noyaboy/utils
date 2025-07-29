@@ -30,6 +30,7 @@ set -euo pipefail
 PROJECT_ROOT="$HOME/project/traccc"
 # 將 BUILD_DIR_NAMES 改成陣列，預設只有一個 "build"
 BUILD_DIR_NAMES=("build")
+PERFORMANCE="0"
 MODE="run"      # 可選 build / run / clean / nsys / nsys-log / run-stat
 NUM=1           # 僅在 run-stat 模式下有效，代表要跑幾次；預設 1 次
 DATASET="10muon_10GeV"  # 預設資料集名稱，用於 --input-directory=odd/geant4_${DATASET}/
@@ -155,6 +156,14 @@ while [[ $# -gt 0 ]]; do
     --help)
       usage
       ;;
+    --performance)           # 解析 performance 參數
+      if [[ "$2" =~ ^[01]$ ]]; then
+        PERFORMANCE="$2"
+      else
+        echo "Error: --performance 只接受 0 或 1。" >&2; usage
+      fi
+      shift 2
+       ;;
     *)
       echo "Unknown option: $1" >&2
       usage
@@ -294,7 +303,7 @@ for BUILD_DIR_NAME in "${BUILD_DIR_NAMES[@]}"; do
             --digitization-file=geometries/odd/odd-digi-geometric-config.json \
             --use-acts-geom-source=on \
             --input-directory=odd/geant4_${DATASET}/ \
-            --input-events=10
+            --input-events=10 
         fi
         echo "[$BUILD_DIR_NAME] Build+Run complete."
       else
@@ -329,6 +338,17 @@ for BUILD_DIR_NAME in "${BUILD_DIR_NAMES[@]}"; do
               --use-acts-geom-source=on \
               --input-directory=odd/geant4_${DATASET}/ \
               --input-events=100
+          elif [[ "$PERFORMANCE" == "1" ]]; then
+            "$EXECUTABLE" \
+              --detector-file=geometries/odd/odd-detray_geometry_detray.json \
+              --material-file=geometries/odd/odd-detray_material_detray.json \
+              --grid-file=geometries/odd/odd-detray_surface_grids_detray.json \
+              --use-detray-detector=on \
+              --digitization-file=geometries/odd/odd-digi-geometric-config.json \
+              --use-acts-geom-source=on \
+              --input-directory=odd/geant4_${DATASET}/ \
+              --input-events=10 \
+              --check-performance
           else
             "$EXECUTABLE" \
               --detector-file=geometries/odd/odd-detray_geometry_detray.json \
@@ -338,7 +358,7 @@ for BUILD_DIR_NAME in "${BUILD_DIR_NAMES[@]}"; do
               --digitization-file=geometries/odd/odd-digi-geometric-config.json \
               --use-acts-geom-source=on \
               --input-directory=odd/geant4_${DATASET}/ \
-              --input-events=10
+              --input-events=10 
           fi
           echo "[$BUILD_DIR_NAME] Run complete."
         else
